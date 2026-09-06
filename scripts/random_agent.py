@@ -1,50 +1,22 @@
 """Random-action smoke test for Mark tasks """
 
-#Launch Isaac Sim 
+import os
+from datetime import datetime
 
-import argparse
-
-from isaaclab.app import AppLauncher
-
-parser = argparse.ArgumentParser(description="Random agent for Mark / Isaac Lab environments.")
-parser.add_argument(
-    "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
-)
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
-parser.add_argument("--task", type=str, default="Mark-Flat-v1-Play", help="Name of the task.")
-AppLauncher.add_app_launcher_args(parser)
-args_cli = parser.parse_args()
-
-app_launcher = AppLauncher(args_cli)
-simulation_app = app_launcher.app
-
-# Launch Isaac Lab
-
-import gymnasium as gym
 import torch
 
+from rsl_rl.runners import OnPolicyRunner
+from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper
+from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
+
 import isaaclab_tasks
-import mark_tasks  
-from isaaclab_tasks.utils import parse_env_cfg
+import mark_tasks
+from isaaclab_tasks.utils import parse_env_cfg, get_checkpoint_path
+import importlib.metadata as metadata
+from isaaclab_rl.rsl_rl import handle_deprecated_rsl_rl_cfg
 
-
-def main():
-    env_cfg = parse_env_cfg(
-        args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric
-    )
-    env = gym.make(args_cli.task, cfg=env_cfg)
-
-    print(f"[INFO]: Gym observation space: {env.observation_space}")
-    print(f"[INFO]: Gym action space: {env.action_space}")
-    env.reset()
+def random_agent(simulation_app, env, task_name):
     while simulation_app.is_running():
         with torch.inference_mode():
             actions = 2 * torch.rand(env.action_space.shape, device=env.unwrapped.device) - 1
             env.step(actions)
-
-    env.close()
-
-
-if __name__ == "__main__":
-    main()
-    simulation_app.close()
