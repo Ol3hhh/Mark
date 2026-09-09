@@ -4,14 +4,38 @@ from __future__ import annotations
 
 import ast
 import re
-from pathlib import Path
 
 from helpers import ASSETS_DIR, JOINT_NAMES, REPO_ROOT
 
 MARK_V1_ROBOT = REPO_ROOT / "source" / "mark_tasks" / "robots" / "mark_v1.py"
-MARK_ENV_CFG = REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v1" / "mark_env_cfg.py"
-MARK_INIT = REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v1" / "__init__.py"
-SYMMETRY = REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v1" / "mdp" / "symmetry.py"
+MARK_ENV_CFG = (
+    REPO_ROOT
+    / "source"
+    / "mark_tasks"
+    / "tasks"
+    / "locomotion"
+    / "mark_v1"
+    / "mark_env_cfg.py"
+)
+MARK_INIT = (
+    REPO_ROOT
+    / "source"
+    / "mark_tasks"
+    / "tasks"
+    / "locomotion"
+    / "mark_v1"
+    / "__init__.py"
+)
+SYMMETRY = (
+    REPO_ROOT
+    / "source"
+    / "mark_tasks"
+    / "tasks"
+    / "locomotion"
+    / "mark_v1"
+    / "mdp"
+    / "symmetry.py"
+)
 
 
 def test_mark_v1_usd_asset_exists():
@@ -27,7 +51,12 @@ def test_robot_cfg_usd_path_points_at_assets():
 def test_robot_cfg_joint_names_match_expected_set():
     text = MARK_V1_ROBOT.read_text(encoding="utf-8")
     # joint_pos keys in init_state
-    found = set(re.findall(r'"((?:Spine|Lbody_hip|Lhip_shin|Lshin_foot|Rbody_hip|Rhip_shin|Rshin_foot))"', text))
+    found = set(
+        re.findall(
+            r'"((?:Spine|Lbody_hip|Lhip_shin|Lshin_foot|Rbody_hip|Rhip_shin|Rshin_foot))"',
+            text,
+        )
+    )
     assert found == set(JOINT_NAMES)
 
 

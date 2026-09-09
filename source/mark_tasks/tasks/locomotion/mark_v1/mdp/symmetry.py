@@ -31,13 +31,17 @@ def compute_symmetric_states(
         batch_size = obs.batch_size[0]
         obs_aug = obs.repeat(2)
         obs_aug["policy"][:batch_size] = obs["policy"][:]
-        obs_aug["policy"][batch_size:] = _mirror_policy_obs(env.unwrapped, obs["policy"])
+        obs_aug["policy"][batch_size:] = _mirror_policy_obs(
+            env.unwrapped, obs["policy"]
+        )
     else:
         obs_aug = None
 
     if actions is not None:
         batch_size = actions.shape[0]
-        actions_aug = torch.zeros(batch_size * 2, actions.shape[1], device=actions.device)
+        actions_aug = torch.zeros(
+            batch_size * 2, actions.shape[1], device=actions.device
+        )
         actions_aug[:batch_size] = actions[:]
         actions_aug[batch_size:] = _mirror_joint_vector(env.unwrapped, actions)
     else:
