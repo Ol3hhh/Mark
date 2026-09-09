@@ -52,13 +52,13 @@ def test_gym_task_ids_registered_in_init():
         assert f'id="{task_id}"' in text
 
 
-def test_env_cfg_uses_split_foot_sensors_and_right_leg_typo():
-    """Asset typo RIght_leg must stay consistent in sensor prim paths."""
+def test_env_cfg_uses_split_foot_sensors():
+    """Sensor prim paths must use Left_leg and Right_leg."""
     text = MARK_ENV_CFG.read_text(encoding="utf-8")
     assert "left_foot_contact" in text
     assert "right_foot_contact" in text
     assert "Left_leg/Left_foot" in text
-    assert "RIght_leg/Right_foot" in text
+    assert "Right_leg/Right_foot" in text
     assert "feet_air_time_positive_biped_split" in text
 
 
