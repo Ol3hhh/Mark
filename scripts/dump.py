@@ -62,7 +62,7 @@ def dump_usd(usd_path: str) -> None:
     print("\n=== RIGID BODIES ===")
     print(f"{'idx':>3}  {'prim_path':70}  {'name':30}")
     for i, p in enumerate(bodies):
-        print(f"{i:3d}  {str(p.GetPath()):70}  {p.GetName():30}")
+        print(f"{i:3d}  {p.GetPath()!s:70}  {p.GetName():30}")
 
     print("\n=== JOINTS (authored in USD) ===")
     print("Revolute lo/hi/target are degrees. Prismatic lo/hi are metres.")
@@ -113,7 +113,9 @@ def dump_usd(usd_path: str) -> None:
             mid = 0.5 * (float(lo) + float(hi))
             skeleton_rad[p.GetName()] = math.radians(mid) if is_revolute else mid
         elif isinstance(target, (int, float)):
-            skeleton_rad[p.GetName()] = math.radians(float(target)) if is_revolute else float(target)
+            skeleton_rad[p.GetName()] = (
+                math.radians(float(target)) if is_revolute else float(target)
+            )
         else:
             skeleton_rad[p.GetName()] = 0.0
 
@@ -135,7 +137,9 @@ def dump_usd(usd_path: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Dump joint/body info from a USD file.")
+    parser = argparse.ArgumentParser(
+        description="Dump joint/body info from a USD file."
+    )
     parser.add_argument(
         "--usd",
         type=str,

@@ -1,4 +1,4 @@
-# Launch Isaac Sim 
+# Launch Isaac Sim
 
 import argparse
 import sys
@@ -7,9 +7,14 @@ from isaaclab.app import AppLauncher
 
 parser = argparse.ArgumentParser(description="Agent script for Mark")
 parser.add_argument(
-    "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations"
+    "--disable_fabric",
+    action="store_true",
+    default=False,
+    help="Disable fabric and use USD I/O operations",
 )
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate")
+parser.add_argument(
+    "--num_envs", type=int, default=None, help="Number of environments to simulate"
+)
 parser.add_argument(
     "--agent",
     type=str,

@@ -26,7 +26,9 @@ def _env(left, right, command_xy: torch.Tensor):
         get_command=lambda _name: command_xy,
     )
     return SimpleNamespace(
-        scene=SimpleNamespace(sensors={"left_foot_contact": left, "right_foot_contact": right}),
+        scene=SimpleNamespace(
+            sensors={"left_foot_contact": left, "right_foot_contact": right}
+        ),
         command_manager=command_manager,
     )
 
