@@ -5,7 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MARK_V1_MDP = REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v1" / "mdp"
+MARK_V1_MDP = (
+    REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v1" / "mdp"
+)
 ASSETS_DIR = REPO_ROOT / "assets"
 
 JOINT_NAMES = [

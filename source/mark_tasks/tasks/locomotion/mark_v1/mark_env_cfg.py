@@ -1,21 +1,20 @@
-"""Flat velocity-tracking env for mark_v1 
+"""Flat velocity-tracking env for mark_v1
 
-    Robot/Humanoid/Body/Body_upper       (rigid body)
-    Robot/Humanoid/Body/Body_lower       (rigid body; joined to Body_upper via Spine)
-    Robot/Humanoid/Left_leg/Left_hip     (rigid body)
-    Robot/Humanoid/Left_leg/Left_shin    (rigid body)
-    Robot/Humanoid/Left_leg/Left_foot    (rigid body)
-    Robot/Humanoid/Right_leg/Right_hip   (rigid body)
-    Robot/Humanoid/Right_leg/Right_shin  (rigid body)
-    Robot/Humanoid/Right_leg/Right_foot  (rigid body)
+Robot/Humanoid/Body/Body_upper       (rigid body)
+Robot/Humanoid/Body/Body_lower       (rigid body; joined to Body_upper via Spine)
+Robot/Humanoid/Left_leg/Left_hip     (rigid body)
+Robot/Humanoid/Left_leg/Left_shin    (rigid body)
+Robot/Humanoid/Left_leg/Left_foot    (rigid body)
+Robot/Humanoid/Right_leg/Right_hip   (rigid body)
+Robot/Humanoid/Right_leg/Right_shin  (rigid body)
+Robot/Humanoid/Right_leg/Right_foot  (rigid body)
 """
 
+import isaaclab_tasks.manager_based.locomotion.velocity.mdp as base_mdp
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import ContactSensorCfg
 from isaaclab.utils import configclass
-
-import isaaclab_tasks.manager_based.locomotion.velocity.mdp as base_mdp
 from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import (
     LocomotionVelocityRoughEnvCfg,
     RewardsCfg,
@@ -24,7 +23,6 @@ from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import (
 from mark_tasks.robots.mark_v1 import MARK_V1_CFG
 
 from . import mdp as mark_mdp
-
 
 
 @configclass
@@ -94,7 +92,9 @@ class MarkEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         self.scene.robot = MARK_V1_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
-        self.scene.contact_forces.prim_path = "{ENV_REGEX_NS}/Robot/Humanoid/Body/Body_lower"
+        self.scene.contact_forces.prim_path = (
+            "{ENV_REGEX_NS}/Robot/Humanoid/Body/Body_lower"
+        )
         self.scene.left_foot_contact = ContactSensorCfg(
             prim_path="{ENV_REGEX_NS}/Robot/Humanoid/Left_leg/Left_foot",
             history_length=3,
@@ -112,7 +112,9 @@ class MarkEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.events.add_base_mass = None
         self.events.base_com = None
         self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
-        self.events.base_external_force_torque.params["asset_cfg"].body_names = ["Body_lower"]
+        self.events.base_external_force_torque.params["asset_cfg"].body_names = [
+            "Body_lower"
+        ]
         self.events.reset_base.params = {
             "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (0, 0)},
             "velocity_range": {
