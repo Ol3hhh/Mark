@@ -1,18 +1,11 @@
 """Random-action / Train / Play script for Mark tasks"""
 
-from cli import simulation_app
-from cli import args_cli
-
 import gymnasium as gym
-import torch
-
+from cli import args_cli, simulation_app
 from isaaclab_tasks.utils.hydra import hydra_task_config
-
-import isaaclab_tasks
-import mark_tasks  
+from play_agent import play_agent
 from random_agent import random_agent
 from train_agent import train_agent
-from play_agent import play_agent
 
 
 @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")

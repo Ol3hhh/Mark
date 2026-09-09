@@ -1,11 +1,13 @@
 from isaaclab.utils import configclass
 from isaaclab_rl.rsl_rl import (
-    RslRlOnPolicyRunnerCfg,
     RslRlMLPModelCfg,
+    RslRlOnPolicyRunnerCfg,
     RslRlPpoAlgorithmCfg,
     RslRlSymmetryCfg,
 )
+
 from ..mdp.symmetry import compute_symmetric_states as mark_symmetry
+
 
 @configclass
 class MarkPPORunnerCfg(RslRlOnPolicyRunnerCfg):
@@ -41,7 +43,6 @@ class MarkPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         lam=0.95,
         desired_kl=0.01,
         max_grad_norm=1.0,
-
         symmetry_cfg=RslRlSymmetryCfg(
             use_data_augmentation=True,
             data_augmentation_func=mark_symmetry,
@@ -51,6 +52,11 @@ class MarkPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     def __post_init__(self):
         super().__post_init__()
         for model in (self.actor, self.critic):
-            for attr in ("stochastic", "init_noise_std", "noise_std_type", "state_dependent_std"):
+            for attr in (
+                "stochastic",
+                "init_noise_std",
+                "noise_std_type",
+                "state_dependent_std",
+            ):
                 if hasattr(model, attr):
                     delattr(model, attr)
