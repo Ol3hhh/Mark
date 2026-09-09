@@ -1,6 +1,6 @@
 """Custom MDP reward terms specific to the mark_v1 USD hierarchy.
 
-The Mark asset groups leg links under separate ``Left_leg`` / ``RIght_leg`` Xforms
+The Mark asset groups leg links under separate ``Left_leg`` / ``Right_leg`` Xforms
 (unlike the flat, sibling-body hierarchy used by Isaac Lab's reference robots, e.g. H1).
 Isaac Lab's ``ContactSensorCfg`` only resolves one literal parent prim plus a single
 wildcard leaf level, so a single sensor cannot see both feet at once here. We instead

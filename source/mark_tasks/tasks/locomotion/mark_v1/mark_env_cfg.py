@@ -5,9 +5,9 @@
     Robot/Humanoid/Left_leg/Left_hip     (rigid body)
     Robot/Humanoid/Left_leg/Left_shin    (rigid body)
     Robot/Humanoid/Left_leg/Left_foot    (rigid body)
-    Robot/Humanoid/RIght_leg/Right_hip   (rigid body; note asset typo "RIght_leg")
-    Robot/Humanoid/RIght_leg/Right_shin  (rigid body)
-    Robot/Humanoid/RIght_leg/Right_foot  (rigid body)
+    Robot/Humanoid/Right_leg/Right_hip   (rigid body)
+    Robot/Humanoid/Right_leg/Right_shin  (rigid body)
+    Robot/Humanoid/Right_leg/Right_foot  (rigid body)
 """
 
 from isaaclab.managers import RewardTermCfg as RewTerm
@@ -101,7 +101,7 @@ class MarkEnvCfg(LocomotionVelocityRoughEnvCfg):
             track_air_time=True,
         )
         self.scene.right_foot_contact = ContactSensorCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/Humanoid/RIght_leg/Right_foot",
+            prim_path="{ENV_REGEX_NS}/Robot/Humanoid/Right_leg/Right_foot",
             history_length=3,
             track_air_time=True,
         )
