@@ -55,3 +55,26 @@ jobs:
       - name: Run unit tests (non-Isaac / non-GPU)
         run: |
           pytest -v -m "not isaac and not gpu"
+
+  check-walk:
+    name: Mark_v1 Check Motion
+    needs: [lint, test]
+    if: >
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, isaac-gpu]
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run check_motion (walk-eval gate)
+        shell: bash -l {0}
+        run: |
+          # CONDA_SH_PATH is machine-specific and injected by the self-hosted
+          # runner's own .env file (Programs/actions-runner/.env on the
+          # runner host), not committed here -- so this workflow stays
+          # portable if the runner ever moves/gets reinstalled elsewhere.
+          source "$CONDA_SH_PATH"
+          conda activate env_isaaclab
+          python scripts/agent.py --task Mark-Flat-v1-Check --headless
