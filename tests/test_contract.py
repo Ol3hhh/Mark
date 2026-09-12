@@ -81,6 +81,15 @@ def test_gym_task_ids_registered_in_init():
         assert f'id="{task_id}"' in text
 
 
+def test_check_motion_task_registered_in_init():
+    """The walk-eval gate task must reuse the PLAY env cfg (fixed velocity,
+    num_envs=1) so check_motion.py evaluates the same conditions as -Play."""
+    text = MARK_INIT.read_text(encoding="utf-8")
+    assert 'id="Mark-Flat-v1-Check"' in text
+    check_block = text.split('id="Mark-Flat-v1-Check"')[1]
+    assert "MarkEnvCfg_PLAY" in check_block
+
+
 def test_env_cfg_uses_split_foot_sensors():
     """Sensor prim paths must use Left_leg and Right_leg."""
     text = MARK_ENV_CFG.read_text(encoding="utf-8")
@@ -103,3 +112,27 @@ def test_cli_task_choices_match_registered_ids():
     cli = (REPO_ROOT / "scripts" / "cli.py").read_text(encoding="utf-8")
     for task_id in ("Mark-Flat-v1-Train", "Mark-Flat-v1-Play", "Mark-Flat-v1-RA"):
         assert task_id in cli
+
+
+def test_cli_task_choices_include_check_motion():
+    cli = (REPO_ROOT / "scripts" / "cli.py").read_text(encoding="utf-8")
+    assert "Mark-Flat-v1-Check" in cli
+
+
+def test_agent_dispatches_check_motion_task():
+    agent = (REPO_ROOT / "scripts" / "agent.py").read_text(encoding="utf-8")
+    assert "from check_motion import check_motion" in agent
+    assert '"Mark-Flat-v1-Check"' in agent
+    assert "sys.exit(0 if passed else 1)" in agent
+
+
+def test_check_motion_script_defines_pass_fail_thresholds():
+    """check_motion.py must exist and expose the walk-eval metrics/thresholds"""
+    check_motion = (REPO_ROOT / "motion_tests" / "check_motion.py").read_text(
+        encoding="utf-8"
+    )
+    assert "def check_motion(" in check_motion
+    assert "min_survival_rate" in check_motion
+    assert "max_mean_lin_vel_error" in check_motion
+    assert "time_outs" in check_motion
+    assert "return passed" in check_motion
