@@ -7,7 +7,9 @@ import isaaclab.sim as sim_utils
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.assets.articulation import ArticulationCfg
 
-ARM_ABDUCTION_DEG = 15.0  # default sideways arm offset (hand ~0.18 m further out than at 0 deg)
+ARM_ABDUCTION_DEG = (
+    15.0  # default sideways arm offset (hand ~0.18 m further out than at 0 deg)
+)
 
 _MARK_V2_USD = str(Path(__file__).resolve().parents[3] / "assets" / "mark_v2.usd")
 
@@ -36,8 +38,8 @@ MARK_V2_CFG = ArticulationCfg(
         joint_pos={
             "Spine": radians(0.0),
             "Lbody_hip": radians(0.0),
-            "Lhip_shin": radians(-12.0),  
-            "Lshin_foot": radians(10.0),  
+            "Lhip_shin": radians(-12.0),
+            "Lshin_foot": radians(10.0),
             "Rbody_hip": radians(0.0),
             "Rhip_shin": radians(-12.0),
             "Rshin_foot": radians(10.0),
@@ -49,8 +51,8 @@ MARK_V2_CFG = ArticulationCfg(
             "Lshoulder_upperarm": radians(0.0),
             "Lupperarm_forearm": radians(20.0),
             "Rbody_shoulder": radians(ARM_ABDUCTION_DEG),
-            "Rshoulder_upperarm": radians(0.0), 
-            "Rupperarm_forearm": radians(20.0), 
+            "Rshoulder_upperarm": radians(0.0),
+            "Rupperarm_forearm": radians(20.0),
         },
         joint_vel={".*": 0.0},
     ),
