@@ -3,9 +3,8 @@
 import sys
 
 import gymnasium as gym
-
-from cli import args_cli, simulation_app
 from check_motion import check_motion
+from cli import args_cli, simulation_app
 from isaaclab_tasks.utils.hydra import hydra_task_config
 from play_agent import play_agent
 from random_agent import random_agent

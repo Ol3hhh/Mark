@@ -86,9 +86,11 @@ def feet_air_time_asymmetry(
 
 def yaw_rate_l2(
     env: ManagerBasedRLEnv,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    asset_cfg: SceneEntityCfg | None = None,
 ) -> torch.Tensor:
     """Squared world-frame yaw rate. The command is a zero yaw rate, so this damps arcs."""
+    if asset_cfg is None:
+        asset_cfg = SceneEntityCfg("robot")
     asset = env.scene[asset_cfg.name]
     return torch.square(asset.data.root_ang_vel_w[:, 2])
 
@@ -96,7 +98,7 @@ def yaw_rate_l2(
 def motion_synchronisation_impl(
     env: ManagerBasedRLEnv,
     command_name: str,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    asset_cfg: SceneEntityCfg | None = None,
     max_value: float | None = None,
 ) -> torch.Tensor:
     """Contralateral hip–arm swing: L_hip with R_arm, R_hip with L_arm.
@@ -104,6 +106,8 @@ def motion_synchronisation_impl(
     ``max_value`` caps the (otherwise unbounded, amplitude-growing) product so the
     term cannot dominate the return or be farmed with a static extreme pose.
     """
+    if asset_cfg is None:
+        asset_cfg = SceneEntityCfg("robot")
     asset = env.scene[asset_cfg.name]
 
     q = asset.data.joint_pos[:, asset_cfg.joint_ids]
@@ -119,7 +123,7 @@ def motion_synchronisation_impl(
 def hip_antiphase_impl(
     env: ManagerBasedRLEnv,
     command_name: str,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    asset_cfg: SceneEntityCfg | None = None,
     max_value: float | None = None,
 ) -> torch.Tensor:
     """Reward opposite hip deviations from default (left/right antiphase gait).
@@ -127,6 +131,8 @@ def hip_antiphase_impl(
     ``max_value`` caps the (otherwise unbounded, amplitude-growing) product so a static
     scissor stance with the same leg always in front cannot be farmed for reward.
     """
+    if asset_cfg is None:
+        asset_cfg = SceneEntityCfg("robot")
     asset = env.scene[asset_cfg.name]
     q = asset.data.joint_pos[:, asset_cfg.joint_ids]
     q0 = asset.data.default_joint_pos[:, asset_cfg.joint_ids]

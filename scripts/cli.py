@@ -48,6 +48,4 @@ app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
 
 
-import mark_tasks  
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "motion_tests"))

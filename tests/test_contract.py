@@ -268,9 +268,13 @@ def test_mark_v2_symmetry_sign_flips_are_only_pseudo_vector_axes():
     tree = ast.parse(text)
     sign_flips = None
     for node in tree.body:
-        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
-            if node.target.id == "_SIGN_FLIP_JOINTS" and node.value is not None:
-                sign_flips = ast.literal_eval(node.value)
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == "_SIGN_FLIP_JOINTS"
+            and node.value is not None
+        ):
+            sign_flips = ast.literal_eval(node.value)
     assert sign_flips is not None
     assert set(sign_flips) == {
         "Head_neck",
