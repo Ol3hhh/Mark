@@ -31,6 +31,10 @@ parser.add_argument(
         "Mark-Flat-v1-Train",
         "Mark-Flat-v1-RA",
         "Mark-Flat-v1-Check",
+        "Mark-Flat-v2-Play",
+        "Mark-Flat-v2-Train",
+        "Mark-Flat-v2-RA",
+        "Mark-Flat-v2-Check",
     ],
     help="Name of the task",
 )
@@ -43,12 +47,7 @@ sys.argv = [sys.argv[0]] + hydra_args
 app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
 
-# Triggers mark_tasks/__init__.py's import_packages(), which recursively
-# imports every tasks/locomotion/<robot>/__init__.py and runs their
-# gym.register(...) calls. Without this, gym.spec()/gym.make() never see any
-# "Mark-Flat-v*-*" task id (NameNotFound), because nothing else in this
-# process ever imports mark_tasks. Must come after AppLauncher (mark_tasks'
-# submodules import isaaclab/isaacsim types that only resolve once Kit is up).
-import mark_tasks  # noqa: F401
+
+import mark_tasks  
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "motion_tests"))
