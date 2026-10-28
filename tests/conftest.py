@@ -11,7 +11,13 @@ from types import SimpleNamespace
 
 import pytest
 import torch
-from helpers import JOINT_NAMES, MARK_V1_MDP, POLICY_TERM_DIMS, POLICY_TERM_NAMES
+from helpers import (
+    JOINT_NAMES,
+    MARK_V1_MDP,
+    MARK_V2_MDP,
+    POLICY_TERM_DIMS,
+    POLICY_TERM_NAMES,
+)
 
 
 def _load_module(module_name: str, path: Path):
@@ -30,19 +36,34 @@ def symmetry_mod():
     return _load_module("mark_mdp_symmetry", MARK_V1_MDP / "symmetry.py")
 
 
-@pytest.fixture(scope="session")
-def rewards_mod():
+def _stub_isaaclab_managers():
     # rewards.py imports isaaclab types; stub them so tests run without Isaac Lab.
     if "isaaclab.managers" not in sys.modules:
+
+        class _SceneEntityCfg:
+            def __init__(self, *args, **kwargs):
+                pass
+
         managers = types.ModuleType("isaaclab.managers")
-        managers.SceneEntityCfg = object  # type: ignore[attr-defined]
+        managers.SceneEntityCfg = _SceneEntityCfg  # type: ignore[attr-defined]
         sensors = types.ModuleType("isaaclab.sensors")
         sensors.ContactSensor = object  # type: ignore[attr-defined]
         isaaclab = types.ModuleType("isaaclab")
         sys.modules.setdefault("isaaclab", isaaclab)
         sys.modules["isaaclab.managers"] = managers
         sys.modules["isaaclab.sensors"] = sensors
+
+
+@pytest.fixture(scope="session")
+def rewards_mod():
+    _stub_isaaclab_managers()
     return _load_module("mark_mdp_rewards", MARK_V1_MDP / "rewards.py")
+
+
+@pytest.fixture(scope="session")
+def rewards_v2_mod():
+    _stub_isaaclab_managers()
+    return _load_module("mark_v2_mdp_rewards", MARK_V2_MDP / "rewards.py")
 
 
 @pytest.fixture
