@@ -1,10 +1,20 @@
 """Random-action / Train / Play / Check script for Mark tasks"""
 
+# ruff: noqa: I001
+# NOTE: the import order below is NOT alphabetical on purpose and must stay
+# that way -- `cli` has to be imported first because it starts AppLauncher
+# and puts motion_tests/ on sys.path. Every import after it (check_motion,
+# isaaclab_tasks, play_agent, random_agent, train_agent) transitively pulls
+# in isaaclab/isaacsim modules that only resolve once AppLauncher is running
+# (see scripts/cli.py and .cursor/rules/rl-code-style.mdc). Do NOT let an
+# auto-formatter/isort "fix" re-sort these -- that reintroduces
+# `ModuleNotFoundError: No module named 'check_motion'` / `No module named 'pxr'`.
 import sys
 
 import gymnasium as gym
-from check_motion import check_motion
+
 from cli import args_cli, simulation_app
+from check_motion import check_motion
 from isaaclab_tasks.utils.hydra import hydra_task_config
 from play_agent import play_agent
 from random_agent import random_agent

@@ -1,7 +1,7 @@
 """Mark training agent invoke"""
 
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from isaaclab_rl.rsl_rl import RslRlVecEnvWrapper
 from isaaclab_tasks.utils.parse_cfg import load_cfg_from_registry
@@ -15,9 +15,7 @@ def train_agent(simulation_app, env, task_name, agent_cfg=None):
     log_root = os.path.abspath(
         os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
     )
-    log_dir = os.path.join(
-        log_root, datetime.now(timezone.utc).strftime("%Y-%m-%d_%H-%M-%S")
-    )
+    log_dir = os.path.join(log_root, datetime.now(UTC).strftime("%Y-%m-%d_%H-%M-%S"))
 
     env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
 
