@@ -65,6 +65,25 @@ MARK_V2_SYMMETRY = (
     / "mdp"
     / "symmetry.py"
 )
+MARK_V3_ROBOT = REPO_ROOT / "source" / "mark_tasks" / "robots" / "mark_v3.py"
+MARK_V3_ENV_CFG = (
+    REPO_ROOT
+    / "source"
+    / "mark_tasks"
+    / "tasks"
+    / "locomotion"
+    / "mark_v3"
+    / "mark_v3_env_cfg.py"
+)
+MARK_V3_INIT = (
+    REPO_ROOT
+    / "source"
+    / "mark_tasks"
+    / "tasks"
+    / "locomotion"
+    / "mark_v3"
+    / "__init__.py"
+)
 
 MARK_V2_JOINT_NAMES = [
     "Spine",
@@ -268,9 +287,13 @@ def test_mark_v2_symmetry_sign_flips_are_only_pseudo_vector_axes():
     tree = ast.parse(text)
     sign_flips = None
     for node in tree.body:
-        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
-            if node.target.id == "_SIGN_FLIP_JOINTS" and node.value is not None:
-                sign_flips = ast.literal_eval(node.value)
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == "_SIGN_FLIP_JOINTS"
+            and node.value is not None
+        ):
+            sign_flips = ast.literal_eval(node.value)
     assert sign_flips is not None
     assert set(sign_flips) == {
         "Head_neck",
@@ -286,3 +309,70 @@ def test_mark_v2_env_cfg_guards_against_lean_and_dominant_leg():
     assert "lin_vel_z_l2 = None" not in text
     assert "feet_air_time_asymmetry" in text
     assert "yaw_rate_l2" in text
+
+
+def test_mark_v3_usd_asset_exists():
+    assert (ASSETS_DIR / "mark_v3.usd").is_file()
+
+
+def test_mark_v3_robot_cfg_is_passively_driven():
+    text = MARK_V3_ROBOT.read_text(encoding="utf-8")
+    assert 'parents[3] / "assets" / "mark_v3.usd"' in text
+    assert 'joint_names_expr=["wheel_axle"]' in text
+    wheel_section = text.split('"wheel": ImplicitActuatorCfg(')[1].split(
+        '"pedals": ImplicitActuatorCfg('
+    )[0]
+    assert "stiffness=0.0" in wheel_section
+    assert "pos=(0.0, 0.0, 0.392)" in text
+
+
+def test_mark_v3_actions_exclude_unicycle_joints():
+    text = MARK_V3_ENV_CFG.read_text(encoding="utf-8")
+    tree = ast.parse(text)
+    actions = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.ClassDef) and node.name == "ActionsCfg"
+    )
+    actions_source = ast.get_source_segment(text, actions)
+    assert actions_source is not None
+    for passive_joint in (
+        "wheel_axle",
+        "left_pedal",
+        "right_pedal",
+        "seat_joint",
+    ):
+        assert passive_joint not in actions_source
+
+
+def test_mark_v3_uses_standalone_manager_based_env():
+    text = MARK_V3_ENV_CFG.read_text(encoding="utf-8")
+    assert "class MarkEnvCfg(ManagerBasedRLEnvCfg)" in text
+    assert "LocomotionVelocityRoughEnvCfg" not in text
+    assert "left_foot_pedal_contact" in text
+    assert "right_foot_pedal_contact" in text
+
+
+def test_mark_v3_task_ids_registered_and_exposed_by_cli():
+    init_text = MARK_V3_INIT.read_text(encoding="utf-8")
+    cli_text = (REPO_ROOT / "scripts" / "cli.py").read_text(encoding="utf-8")
+    for task_id in (
+        "Mark-Flat-v3-Train",
+        "Mark-Flat-v3-Play",
+        "Mark-Flat-v3-RA",
+        "Mark-Flat-v3-Check",
+    ):
+        assert f'id="{task_id}"' in init_text
+        assert task_id in cli_text
+
+
+def test_mark_v3_check_uses_balance_metrics():
+    agent_text = (REPO_ROOT / "scripts" / "agent.py").read_text(encoding="utf-8")
+    check_text = (
+        REPO_ROOT / "motion_tests" / "check_balance.py"
+    ).read_text(encoding="utf-8")
+    assert "from check_balance import check_balance" in agent_text
+    assert 'args_cli.task == "Mark-Flat-v3-Check"' in agent_text
+    assert "def check_balance(" in check_text
+    assert "mean_tilt_rad" in check_text
+    assert "pedal_contact_ratio" in check_text

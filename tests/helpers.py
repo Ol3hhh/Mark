@@ -11,6 +11,9 @@ MARK_V1_MDP = (
 MARK_V2_MDP = (
     REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v2" / "mdp"
 )
+MARK_V3_MDP = (
+    REPO_ROOT / "source" / "mark_tasks" / "tasks" / "locomotion" / "mark_v3" / "mdp"
+)
 ASSETS_DIR = REPO_ROOT / "assets"
 
 JOINT_NAMES = [

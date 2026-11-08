@@ -7,7 +7,7 @@ import isaaclab.sim as sim_utils
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.assets.articulation import ArticulationCfg
 
-ARM_ABDUCTION_DEG = 15.0  # default sideways arm offset (hand ~0.18 m further out than at 0 deg)
+ARM_ABDUCTION_DEG = 15.0 
 
 _MARK_V2_USD = str(Path(__file__).resolve().parents[3] / "assets" / "mark_v2.usd")
 

@@ -35,6 +35,10 @@ parser.add_argument(
         "Mark-Flat-v2-Train",
         "Mark-Flat-v2-RA",
         "Mark-Flat-v2-Check",
+        "Mark-Flat-v3-Play",
+        "Mark-Flat-v3-Train",
+        "Mark-Flat-v3-RA",
+        "Mark-Flat-v3-Check",
     ],
     help="Name of the task",
 )
@@ -48,6 +52,6 @@ app_launcher = AppLauncher(args_cli)
 simulation_app = app_launcher.app
 
 
-import mark_tasks  
+import mark_tasks  # noqa: F401  # task registration side effect
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "motion_tests"))

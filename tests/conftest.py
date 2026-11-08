@@ -15,6 +15,7 @@ from helpers import (
     JOINT_NAMES,
     MARK_V1_MDP,
     MARK_V2_MDP,
+    MARK_V3_MDP,
     POLICY_TERM_DIMS,
     POLICY_TERM_NAMES,
 )
@@ -64,6 +65,14 @@ def rewards_mod():
 def rewards_v2_mod():
     _stub_isaaclab_managers()
     return _load_module("mark_v2_mdp_rewards", MARK_V2_MDP / "rewards.py")
+
+
+@pytest.fixture(scope="session")
+def observations_v3_mod():
+    _stub_isaaclab_managers()
+    return _load_module(
+        "mark_v3_mdp_observations", MARK_V3_MDP / "observations.py"
+    )
 
 
 @pytest.fixture
